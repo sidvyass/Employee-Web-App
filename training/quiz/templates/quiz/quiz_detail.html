@@ -1,0 +1,80 @@
+{% extends "quiz/base.html" %}
+
+{% block title %} {{ quiz.title }} {% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<style>
+    .form-check-input{
+        outline: 2px solid black;
+    }
+</style>
+
+<div class="bg-light border rounded text-dark text-center" id="timer" style="padding-top:55px;"> Time left: <span id="time">00:00</span> minutes </div>
+
+<div class="container" style="padding-top: 55px;">
+    <h1 class="text-center">{{ quiz.title }}</h1>
+
+    <form id="quizform" method="post">
+        <input type="number" name="time_taken" id="timeTaken" value="">
+        {% csrf_token %}{{ form|crispy }}
+
+        {% for ques in quiz.question_set.all %}
+            <div class="card my-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ ques.text }}</h5>
+                    
+                    {% for answer in ques.answer_set.all %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="selected_answers_{{ques.id}}" value="{{ answer.id }}" id="answer{{ answer.id }}">
+                            <label class="form-check-label" for="answer{{ answer.id }}">
+                                {{ answer.text }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+</div>
+
+<script>
+    var startTime = new Date().getTime();
+    var duration =  30;
+    var display = document.getElementById('time');
+    var endTime = new Date(new Date().getTime() + duration * 60000);
+
+    function updateTimeTaken(){
+        var now = new Date().getTime();
+        var timeTaken = Math.floor((now - startTime) / 1000);
+        document.getElementById("timeTaken").value = timeTaken;
+    }
+
+    function startTimer() {
+        var x = setInterval(function() {
+            var now = new Date().getTime();
+            var distance = endTime - now;
+
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+            var seconds = Math.floor((distance % (1000 * 60)) / (1000))
+
+            display.innerHTML = minutes + "m " + seconds + "s ";
+
+            if (distance < 0) {
+                clearInterval(x);
+                display.innerHTML = "EXPIRED";
+                document.getElementById("quizform").submit()
+            }
+        }, 1000);
+    }
+
+    document.getElementById("quizform").addEventListener("submit", updateTimeTaken)
+
+    window.onload = function() {
+        startTimer();
+    }
+
+</script>
+
+{% endblock %}

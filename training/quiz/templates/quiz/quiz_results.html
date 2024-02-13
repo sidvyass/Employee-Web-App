@@ -1,0 +1,21 @@
+{% extends "quiz/base.html" %}
+{% block title %} Quiz {{quiz.title}} Results {%endblock%}
+<!-- objects passed -> attempt, quiz-->
+{%block content%}
+<h1 class="text-center" style="padding-top: 55px;">Your score is {{score}}</h1>
+
+{% for ques in quiz.question_set.all %}
+    <fieldset class="border">
+        <legend> Question: {{ques}} </legend>
+            {% for answer in ques.answer_set.all %}
+                <label>
+                    {% if answer.id in correct_answer %}
+                    <strong style="color: green;">Correctly answered-> {{answer.text}}</strong><br>
+                    {% else %}
+                    {{ answer.text }} | {{answer.is_correct}}
+                </label><br>
+                {% endif %}
+        {%endfor%}
+    </fieldset>
+{%endfor%} 
+{%endblock%}

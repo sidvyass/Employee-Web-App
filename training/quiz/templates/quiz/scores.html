@@ -1,0 +1,18 @@
+{%extends "quiz/base.html" %}
+{%block title%} Scores {{user.username}} {%endblock%}
+
+{%block content%}
+<div class="container" style="padding-top: 55px;">
+    <h1 class="text-center"> All your scores {{user.username}} </h1>
+
+    {% for attempt in user_attempt%}
+    <div class=""
+    <ol>
+        <li class="w-50">
+            {{attempt.quiz}} : {{attempt.score}}
+        </li>
+    </ol> 
+    {%endfor%}
+</div>
+
+{%endblock%}

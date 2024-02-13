@@ -1,0 +1,13 @@
+{% extends 'documentcontrol/base.html'%}
+{% block title %} All Documents {% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 55px;">
+    <h1 class="text-center"> All Documents </h1>
+    {% for doc in documents%}
+    <ol>
+        <li> {{doc.file.title}} <a> view doc </a><li>
+    </ol>
+    {% endfor %}
+</div>
+{% endblock %}
