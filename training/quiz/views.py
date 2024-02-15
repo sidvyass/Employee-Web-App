@@ -34,18 +34,22 @@ def quiz_detail(request, quiz_pk):
         quiz = get_object_or_404(Quiz, pk=quiz_pk)
         user = request.user
         time = int(request.POST.get('time_taken'))
+        print(time)
         answer_ids = []
 
         try:
             attempt = UserAttempt.objects.get(user=user, quiz=quiz)
+            print(attempt.time_taken)
+            if time < attempt.time_taken:
+                attempt.time_taken = time
         except UserAttempt.DoesNotExist:
             attempt = UserAttempt(user=user, quiz=quiz)
             attempt.time_taken = time
+            print(attempt.time_taken)
 
-        if time < attempt.time_taken:
-            attempt.time_taken = time
+
+        # score has to be zero before we start calculating
         attempt.score = 0
-
         for ques in quiz.question_set.all():
             selected_answer = request.POST.get(f'selected_answers_{ques.id}')
             if selected_answer:  # to ensure that if a question is not answered we dont get an error 
@@ -58,9 +62,9 @@ def quiz_detail(request, quiz_pk):
             attempt.best_score = attempt.score
             attempt.save()
 
-        print(answer_ids)
         return render(request, "quiz/quiz_results.html", {"score":attempt.score,
                                                           "quiz":quiz,
+                                                          "time_taken": attempt.time_taken,
                                                           "correct_answer":answer_ids}) 
     else:
         quiz = get_object_or_404(Quiz, pk=quiz_pk)
@@ -74,7 +78,7 @@ def quiz_detail_landing(request, quiz_pk):
     except UserAttempt.DoesNotExist:
         best_score = 0
 
-    return render(request, "quiz/quiz_landing_page.html", {"quiz":quiz, "best_score": best_score})
+    return render(request, "quiz/quiz_landing_page.html", {"quiz":quiz, "best_score": best_score, "count": quiz.question_set.count()})
 
 
 @login_required(login_url="/login")

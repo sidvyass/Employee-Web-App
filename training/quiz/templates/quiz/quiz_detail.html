@@ -16,7 +16,7 @@
     <h1 class="text-center">{{ quiz.title }}</h1>
 
     <form id="quizform" method="post">
-        <input type="number" name="time_taken" id="timeTaken" value="">
+        <input type="hidden" name="time_taken" id="timeTaken" value="">
         {% csrf_token %}{{ form|crispy }}
 
         {% for ques in quiz.question_set.all %}

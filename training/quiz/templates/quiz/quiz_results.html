@@ -3,6 +3,7 @@
 <!-- objects passed -> attempt, quiz-->
 {%block content%}
 <h1 class="text-center" style="padding-top: 55px;">Your score is {{score}}</h1>
+<h2 class="text-center"> Time - {{time_taken}} </h2>
 
 {% for ques in quiz.question_set.all %}
     <fieldset class="border">

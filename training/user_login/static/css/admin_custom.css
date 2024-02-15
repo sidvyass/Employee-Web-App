@@ -1,0 +1,51 @@
+:root {
+    --main-bg-color: #333;
+    --main-font: Arial, Helvetica, sans-serif;
+}
+#header {
+    background-color: var(--main-bg-color);
+}
+#branding #site-name a {
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+#user-tools {
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+#content.colMS h1 {
+    color: var(--main-bg-color);
+    font-family: Arial, Helvetica, sans-serif;
+}
+.module caption {
+    background-color: #333;
+}
+nav div.breadcrumbs{
+    background-color: #333;
+}
+fieldset.djn-fieldset.module h2{
+    background-color: var(--main-bg-color);
+    font-family: var(--main-font);
+}
+
+/*question*/
+div.items.djn-items.ui-sortable div.djn-dynamic-form-quiz-question h3{
+    background-color: red;
+    font-family: var(--main-font);
+    color: white;
+} 
+/*answer*/
+div.items.djn-items.ui-sortable div.djn-dynamic-form-quiz-question div.items h3{
+    background-color: #3a4750; 
+    font-family: var(--main-font);
+    color: white;
+} 
+
+div.items.djn-items.ui-sortable div.djn-dynamic-form-quiz-question div.items{
+    padding-left: 30px;
+}
+
+div.field-text textarea {
+    height: 70px;
+    width: 750px !important;
+}

@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container" style="padding-top: 55px;">
     <h1 class="text-center">{{quiz.title}}</h1>
-    <h2> Time Limit: 30 <br> Number of Questions: 30 <br> Best Score: {{best_score}}</h2>
+    <h2> Time Limit: 30 <br> Number of Questions: {{count}} <br> Best Score: {{best_score}}</h2>
     <div class="text-center">
         <a class="btn btn-primary w-25" href="{% url 'quiz:quiz_detail' quiz.id %}">Start</a>
     </div>
