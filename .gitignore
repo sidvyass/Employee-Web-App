@@ -2,3 +2,5 @@ keys.env
 /venv
 __pycache__/
 *.py[cod]
+/training/user_login/data.py
+/training/db.sqlite3
