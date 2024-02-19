@@ -4,7 +4,6 @@ from .models import Quiz, UserAttempt, Answer, Employee, Department
 from django.urls import reverse
 from django.http import HttpResponse
 
-# Create your views here.
 
 @login_required(login_url="/login")
 def quizhome(request):
@@ -14,7 +13,10 @@ def quizhome(request):
     except Employee.DoesNotExist:
         return redirect(reverse("choose_department"))
 
-    return render(request, "quiz/home.html", {"quiz":Quiz.objects.all()})
+    quiz = Quiz.objects.filter(department=department)
+    for q in quiz:
+        print(q)
+    return render(request, "quiz/home.html", {"quiz":quiz})
 
 def choose_department(request):
     """In case department is not selected"""
@@ -32,21 +34,17 @@ def choose_department(request):
 def quiz_detail(request, quiz_pk):
     if request.method == "POST":
         quiz = get_object_or_404(Quiz, pk=quiz_pk)
+        print(quiz)
         user = request.user
+        print(user)
+        # TODO: time is not in the correct format
         time = int(request.POST.get('time_taken'))
-        print(time)
         answer_ids = []
-
-        try:
-            attempt = UserAttempt.objects.get(user=user, quiz=quiz)
-            print(attempt.time_taken)
-            if time < attempt.time_taken:
-                attempt.time_taken = time
-        except UserAttempt.DoesNotExist:
-            attempt = UserAttempt(user=user, quiz=quiz)
+        
+        attempt, created = UserAttempt.objects.get_or_create(user=user, quiz=quiz)
+        print(attempt)
+        if time < attempt.time_taken:
             attempt.time_taken = time
-            print(attempt.time_taken)
-
 
         # score has to be zero before we start calculating
         attempt.score = 0
@@ -70,6 +68,7 @@ def quiz_detail(request, quiz_pk):
         quiz = get_object_or_404(Quiz, pk=quiz_pk)
         return render(request, "quiz/quiz_detail.html", {"quiz": quiz})
 
+@login_required(login_url="/login")
 def quiz_detail_landing(request, quiz_pk):
     quiz = get_object_or_404(Quiz, pk=quiz_pk)
     try:
@@ -85,4 +84,5 @@ def quiz_detail_landing(request, quiz_pk):
 def scores(request):
     user = request.user
     attempts = UserAttempt.objects.filter(user=user)
+    print(attempts)
     return render(request, "quiz/scores.html", {"user_attempt":attempts})

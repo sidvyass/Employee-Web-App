@@ -4,15 +4,15 @@
 {%block content%}
 <div class="container" style="padding-top: 55px;">
     <h1 class="text-center"> All your scores {{user.username}} </h1>
-
-    {% for attempt in user_attempt%}
-    <div class=""
-    <ol>
-        <li class="w-50">
-            {{attempt.quiz}} : {{attempt.score}}
-        </li>
-    </ol> 
-    {%endfor%}
+    <div class="container col-md-6">
+        {% for attempt in user_attempt%}
+        <ol class="list-group">
+            <li class="list-group-item text-center">
+                {{attempt.quiz}} : {{attempt.score}}
+            </li>
+        </ol> 
+        {%endfor%}
+    </div>
 </div>
 
 {%endblock%}

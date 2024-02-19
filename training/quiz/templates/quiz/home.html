@@ -7,7 +7,6 @@
     <h3 class="text-center my-5">Choose a quiz</h3>
         <div class="row">
             {% for q in quiz %}
-                {% if q.question_set.count > 0 %}
             <div class="col-lg-4 mb-4">
                 <div class="card mx-2 my-2">
                     <img src="https://picsum.photos/300/200" class="card-img-top" alt="...">
@@ -27,7 +26,6 @@
                     </div>
                 </div>
             </div>
-                {% endif %}
             {%endfor%}
         </div>
 </div>

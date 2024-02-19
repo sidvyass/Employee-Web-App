@@ -19,7 +19,7 @@ class Department(models.Model):
 
 class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    department = models.ManyToManyField(Department, related_name="employees")
 
     def __str__(self):
         return self.user.username

@@ -1,7 +1,6 @@
 from typing import Any
 from django.db import IntegrityError, transaction
 from django.core.management import BaseCommand
-from django.core.management.base import CommandParser
 from django.contrib.auth.models import User
 from quiz.models import Employee, Department
 import pyodbc
