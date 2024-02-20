@@ -1,0 +1,38 @@
+{% extends "quiz/base.html" %}
+
+{% block title %} {{ quiz.title }} {% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<style>
+    .form-check-input{
+        outline: 2px solid black;
+    }
+</style>
+
+<h1 class="text-center" style="padding-top:55px;"> {{quiz.title}} </h1>
+
+<div class="container d-flex justify-content-center align-items-center" style="padding-top: 55px;">
+    <form id="quizform" method="post" action="{% url "quiz:take quiz" quiz.id ques_id %}">
+        {% csrf_token %} {{ form|crispy }}
+
+        <div class="card" style="height: 300px; width: 300px;">
+            <div class="card-body d-flex flex-column align-items-center">
+                <h4 class="card-title"> {{ question.text }} </h4>
+                    {% for answer in question.answer_set.all %}
+                    <div class="form-check text-center mx-3 my-3 w-100 h-100">
+                        <input class="form-check-input" type="radio" name="selected" value="{{ answer.id }}" id="answer_{{answer.id}}">
+                        <label class="form-check-label" for="answer_{{answer.id}}"> 
+                            {{answer.text}}
+                        </label>
+                    </div>
+                    {% endfor %}
+            </div>
+        </div>
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-success">Submit</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

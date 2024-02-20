@@ -8,5 +8,6 @@ urlpatterns = [
     path("choose_department", views.choose_department, name="choose_department"),
     path("scores", views.scores, name="scores"),
     path("<int:quiz_pk>/quiz_detail_landing", views.quiz_detail_landing, name="landing_page"),
-    path("<int:quiz_pk>/quiz_detail", views.quiz_detail, name="quiz_detail"),
+    path("<int:quiz_pk>/quiz_detail/", views.quiz_detail, name="quiz_detail"),
+    path("take_quiz/<int:quiz_pk>/<int:ques_no>", views.take_quiz, name="take quiz"),
 ]

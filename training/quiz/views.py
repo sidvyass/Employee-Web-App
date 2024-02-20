@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Quiz, UserAttempt, Answer, Employee, Department
+from .models import Quiz, UserAttempt, Answer, Employee, Department, Question
 from django.urls import reverse
 from django.http import HttpResponse
 
@@ -9,13 +9,14 @@ from django.http import HttpResponse
 def quizhome(request):
     user = request.user
     try:
-        department = user.employee.department
+        department = user.employee.department.all()
+        print(department)
     except Employee.DoesNotExist:
         return redirect(reverse("choose_department"))
 
-    quiz = Quiz.objects.filter(department=department)
-    for q in quiz:
-        print(q)
+    quiz = Quiz.objects.filter(department__in=department)
+    # for q in quiz:
+    #     print(q)
     return render(request, "quiz/home.html", {"quiz":quiz})
 
 def choose_department(request):
@@ -34,15 +35,12 @@ def choose_department(request):
 def quiz_detail(request, quiz_pk):
     if request.method == "POST":
         quiz = get_object_or_404(Quiz, pk=quiz_pk)
-        print(quiz)
         user = request.user
-        print(user)
         # TODO: time is not in the correct format
         time = int(request.POST.get('time_taken'))
         answer_ids = []
         
         attempt, created = UserAttempt.objects.get_or_create(user=user, quiz=quiz)
-        print(attempt)
         if time < attempt.time_taken:
             attempt.time_taken = time
 
@@ -86,3 +84,34 @@ def scores(request):
     attempts = UserAttempt.objects.filter(user=user)
     print(attempts)
     return render(request, "quiz/scores.html", {"user_attempt":attempts})
+
+
+@login_required(login_url="/login")
+def take_quiz(request, quiz_pk, ques_no):
+    user = request.user
+    quiz = Quiz.objects.get(pk=quiz_pk)
+    question_set = [ques.id for ques in quiz.question_set.all()]
+    question_no = ques_no + 1
+    attempt, created = UserAttempt.objects.get_or_create(user=user, quiz=quiz)
+
+    try:
+        # context = quiz, question
+        if request.method == "POST":
+            answer_id = request.POST.get("selected")  # we get the id of the answer from here
+            if Answer.objects.get(pk=answer_id).is_correct:
+                attempt.score += 1
+                print(attempt.score)
+                attempt.save()
+
+            question = Question.objects.get(pk=question_set[ques_no])
+            return render(request, "quiz/take_quiz.html", {"quiz":quiz, "question":question, "ques_id":question_no})
+        else:
+            attempt.score = 0
+            attempt.save()
+            question = Question.objects.get(pk=question_set[ques_no])
+            return render(request, "quiz/take_quiz.html", {"quiz":quiz, "question":question, "ques_id":question_no})
+    except IndexError:
+        if attempt.score > attempt.best_score:
+            attempt.best_score = attempt.score
+        attempts = UserAttempt.objects.filter(user=user)
+        return render(request, "quiz/scores.html", {"user_attempt": attempts})

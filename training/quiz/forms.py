@@ -8,9 +8,9 @@ class QuestionForm(forms.ModelForm):
         model = Question
         fields = '__all__'
 
-    def clean(self):
-        cleaned_data = super().clean()
-        answers = self.instance.answer_set.get.all()
-        if answers.count() > 4:
-            raise ValidationError
-        return cleaned_data
+    # def clean(self):
+    #     cleaned_data = super().clean()
+    #     answers = self.instance.answer_set.get.all()
+    #     if answers.count() > 4:
+    #         raise ValidationError
+    #     return cleaned_data
