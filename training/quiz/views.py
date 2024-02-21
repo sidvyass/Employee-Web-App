@@ -19,6 +19,7 @@ def quizhome(request):
     #     print(q)
     return render(request, "quiz/home.html", {"quiz":quiz})
 
+
 def choose_department(request):
     """In case department is not selected"""
     user = request.user
@@ -30,6 +31,7 @@ def choose_department(request):
         return redirect(reverse("quiz_home"))
     else:
         return render(request, "quiz/choose_department.html", {"departments": Department.objects.all()})
+
 
 @login_required(login_url="/login")
 def quiz_detail(request, quiz_pk):
@@ -66,6 +68,7 @@ def quiz_detail(request, quiz_pk):
         quiz = get_object_or_404(Quiz, pk=quiz_pk)
         return render(request, "quiz/quiz_detail.html", {"quiz": quiz})
 
+
 @login_required(login_url="/login")
 def quiz_detail_landing(request, quiz_pk):
     quiz = get_object_or_404(Quiz, pk=quiz_pk)
@@ -90,6 +93,10 @@ def scores(request):
 def take_quiz(request, quiz_pk, ques_no):
     user = request.user
     quiz = Quiz.objects.get(pk=quiz_pk)
+
+    if not quiz.question_set.all():
+        return HttpResponse("There are no questions in this quiz")
+
     question_set = [ques.id for ques in quiz.question_set.all()]
     question_no = ques_no + 1
     attempt, created = UserAttempt.objects.get_or_create(user=user, quiz=quiz)

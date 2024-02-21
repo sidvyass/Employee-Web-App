@@ -2,20 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-DEPARTMENT_CHOICES = [
-        ("HR", "Human Resources"),
-        ("IT", "Information Technology"),
-        ("FN", "Finance"),
-        ("MK", "Marketing"),
-        ("QL", "Quality"),
-]
-
 class Department(models.Model):
     """we will control who views what through this"""
-    name = models.CharField(max_length=100, choices=DEPARTMENT_CHOICES, unique=True)
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
+
 
 class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -27,6 +20,7 @@ class Employee(models.Model):
     def get_department(self):
         return self.department
 
+
 # parent class that everything else will inherit from
 class Quiz(models.Model):
     title = models.CharField(max_length=100, unique=True)
@@ -36,12 +30,14 @@ class Quiz(models.Model):
         """have to change this as we cannot have such a big string rep, here for debugging"""
         return self.title
 
+
 class Question(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     text = models.TextField()
 
     def __str__(self):
         return self.text
+
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
@@ -50,6 +46,7 @@ class Answer(models.Model):
 
     def __str__(self):
         return self.text
+
 
 class UserAttempt(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
